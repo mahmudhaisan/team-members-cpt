@@ -1,0 +1,17 @@
+{
+    "name": "mahmud/team-members",
+    "description": "Team Members Plugin",
+    "type": "wordpress-plugin",
+    "license": "GPLv2",
+    "authors": [{
+        "name": "Mahmud Haisan"
+    }],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Team\\Members\\": "includes/"
+        },
+        "files": []
+    }
+}
