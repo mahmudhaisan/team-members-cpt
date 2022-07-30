@@ -46,6 +46,7 @@ final class Member_Type_Class {
         $this->define_Plugin_comstants();
         register_activation_hook(__FILE__, [$this, 'activate']); // activation hook
         add_action('plugins_loaded', [$this, 'init_plugin']); //plugin init
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_files']);
     }
 
     /**
@@ -95,6 +96,17 @@ final class Member_Type_Class {
         } else { // for elsewhere
             new  Team\Members\Frontend(); // Frontend class initialize
         }
+    }
+
+    //enqueue files
+    public  function enqueue_files() {
+        // style
+        wp_enqueue_style('bootstrap-file', MEMBER_TYPE_PLUGIN_ASSETS . '/css/bootstrap.min.css');
+        wp_enqueue_style('style-file', MEMBER_TYPE_PLUGIN_ASSETS . '/css/style.css');
+
+        //scripts
+        wp_enqueue_script('bootstrap-file', MEMBER_TYPE_PLUGIN_ASSETS . '/js/bootstrap.min.js', array(), false, true);
+        wp_enqueue_script('script_file', MEMBER_TYPE_PLUGIN_ASSETS . '/js/script.js', array('jquery'), false, true);
     }
 }
 
