@@ -11,19 +11,19 @@ class Teamcpt {
 
 
     public function __construct() {
-
-        add_action('init', [$this, 'apperanttm_image_post_type']); //plugin init
-        add_action('init', [$this, 'apperanttm_cpt_team_member_category']); //plugin init
+        add_action('init', [$this, 'Team_Member_Cpt']);
+        add_action('init', [$this, 'Team_Member_taxonomy']);
+        add_action('add_meta_boxes', [$this, 'meta_box_fields']);
+        add_filter('enter_title_here', [$this, 'title_text_change']);
+        add_action('save_post', [$this, 'save_meta_values']);
     }
-
-    public $a = 55;
 
     /**
      * Register a custom post type called "Team Member".
      *
      * @see get_post_type_labels() for label keys.
      */
-    function apperanttm_image_post_type() {
+    public function Team_Member_Cpt() {
         $labels = array(
             'name'                  => _x('Team Members', 'Post type general name', 'apperanttm'),
             'singular_name'         => _x('Team Member', 'Post type singular name', 'apperanttm'),
@@ -61,7 +61,7 @@ class Teamcpt {
             'rewrite'            => array('slug' => 'team-member'),
             'capability_type'    => 'post',
             'has_archive'        => true,
-            'hierarchical'       => true,
+            'hierarchical'       => false,
             'menu_position'      => null,
             'supports'           => array('title', 'thumbnail',),
         );
@@ -72,8 +72,8 @@ class Teamcpt {
 
 
 
-    // Register Custom category
-    function apperanttm_cpt_team_member_category() {
+    // Register Custom taxonomy
+    function Team_Member_taxonomy() {
 
         $labels = array(
             'name'                       => _x('Member Types', 'Member Type General Name', 'apperanttm'),
@@ -99,7 +99,7 @@ class Teamcpt {
         );
         $args = array(
             'labels'                     => $labels,
-            'hierarchical'               => false,
+            'hierarchical'               => true,
             'public'                     => true,
             'show_ui'                    => true,
             'show_admin_column'          => true,
@@ -107,7 +107,71 @@ class Teamcpt {
             'show_tagcloud'              => true,
         );
 
-        global $team_cpt;
         register_taxonomy('apperanttm_category', $this->team_cpt, $args);
+    }
+
+
+    // cpt  post title input text placeholder
+    function title_text_change($title) {
+        $title = "Enter Your Team Member's Name";
+        return $title;
+    }
+
+
+
+    // meta box fields
+    public function meta_box_fields() {
+
+        // bio meta field
+        add_meta_box(
+            'team-member-bio',
+            __('Bio', 'apperanttm'),
+            [$this, 'meta_box_bio_cb'],
+            $this->team_cpt
+        );
+
+        // member position meta
+        add_meta_box(
+            'team-member-position',
+            __('Position', 'apperanttm'),
+            [$this, 'meta_box_position_cb'],
+            $this->team_cpt
+        );
+    }
+
+
+
+    // meta box bio callback
+    public function meta_box_bio_cb($post) {
+
+        $meta_id = get_post_meta($post->ID);
+
+?>
+
+        <div>
+            <textarea cols="50" rows="10" name="meta_bio_textarea" class="meta_bio_textarea" placeholder="add member's bio" value="5"><?php if (isset($meta_id['meta_bio_textarea'])) echo $meta_id['meta_bio_textarea'][0]; ?></textarea>
+        </div>
+
+
+    <?php }
+
+    // meta box position callback
+    public function meta_box_position_cb($post) {
+        $meta_id = get_post_meta($post->ID);
+    ?>
+        <div>
+            <input name="meta_position_input" type="text" class="meta_position_input" placeholder="add member's position" value="<?php if (isset($meta_id['meta_position_input'])) echo $meta_id['meta_position_input'][0]; ?>">
+        </div>
+<?php }
+
+
+    // save meta values to database
+    public function save_meta_values($post_id) {
+        if (isset($_POST['meta_bio_textarea'])) {
+            update_post_meta($post_id, 'meta_bio_textarea', $_POST['meta_bio_textarea']);
+        }
+        if (isset($_POST['meta_position_input'])) {
+            update_post_meta($post_id, 'meta_position_input', $_POST['meta_position_input']);
+        }
     }
 }
