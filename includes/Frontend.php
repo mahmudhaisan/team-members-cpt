@@ -9,5 +9,7 @@ namespace Team\Members;
 class Frontend {
     function __construct() {
         new Frontend\Shortcode();
+        new Frontend\Archieve();
+        new Admin\Teamcpt();
     }
 }

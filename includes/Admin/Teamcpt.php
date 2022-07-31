@@ -149,7 +149,7 @@ class Teamcpt {
 ?>
 
         <div>
-            <textarea cols="50" rows="10" name="meta_bio_textarea" class="meta_bio_textarea" placeholder="add member's bio" value="5"><?php if (isset($meta_id['meta_bio_textarea'])) echo $meta_id['meta_bio_textarea'][0]; ?></textarea>
+            <textarea cols="80" rows="10" name="meta_bio_textarea" class="meta_bio_textarea" placeholder="add member's bio" value="5"><?php if (isset($meta_id['meta_bio_textarea'])) echo $meta_id['meta_bio_textarea'][0]; ?></textarea>
         </div>
 
 
